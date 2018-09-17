@@ -49,7 +49,7 @@ build_script:
   - cmd: .\bin\blockstore-test.exe
   - cmd: .\bin\blobstore-test.exe
   - cmd: .\bin\cryfs-test.exe
-  #- cmd: .\bin\cryfs-cli-test.exe
+  - cmd: .\bin\cryfs-cli-test.exe
 
   - cmd: cpack -C %CONFIGURATION% --verbose -G WIX
 
