@@ -4,6 +4,10 @@ set -e
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
+# Needed for GCC 7 to work, see https://github.com/Microsoft/LightGBM/issues/1420
+xcode-select --install
+
+
 # Install newer GCC if we're running on GCC
 if [ "${CXX}" == "g++" ]; then
     # We need to uninstall oclint because it creates a /usr/local/include/c++ symlink that clashes with the gcc5 package
