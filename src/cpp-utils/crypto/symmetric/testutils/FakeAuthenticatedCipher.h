@@ -101,7 +101,7 @@ namespace cpputils {
         static uint64_t _checksum(const CryptoPP::byte *data, FakeKey encKey, std::size_t size) {
           uint64_t checksum = 34343435 * encKey.value; // some init value
 
-          for (unsigned int i = 0; i < size; ++i) {
+          for (size_t i = 0; i < size; ++i) {
             checksum ^= (static_cast<uint64_t>(data[i]) << (56 - 8 * (i%8)));
           }
 
