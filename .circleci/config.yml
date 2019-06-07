@@ -59,8 +59,8 @@ references:
           # They aren't set automatically unfortunately
           sudo ln -s /usr/bin/$CC /usr/bin/clang
           sudo ln -s /usr/bin/$CXX /usr/bin/clang++
-          sudo ln -s /usr/bin/clang-tidy-7 /usr/bin/clang-tidy
-          sudo ln -s /usr/bin/run-clang-tidy-7.py /usr/bin/run-clang-tidy.py
+          sudo ln -s /usr/bin/clang-tidy-8 /usr/bin/clang-tidy
+          sudo ln -s /usr/bin/run-clang-tidy-8.py /usr/bin/run-clang-tidy.py
 
           # Need a c++14 compliant STL for clang
           sudo apt-get install -y g++-5
