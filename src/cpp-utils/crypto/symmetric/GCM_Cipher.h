@@ -81,7 +81,7 @@ boost::optional<Data> GCM_Cipher<BlockCipher, KeySize>::decrypt(const CryptoPP::
           CryptoPP::AuthenticatedDecryptionFilter::DEFAULT_FLAGS, TAG_SIZE
         )
       );
-      return boost::optional<Data>(std::move(plaintext));
+      return plaintext;
     } catch (const CryptoPP::HashVerificationFilter::HashVerificationFailed &e) {
       return boost::none;
     }

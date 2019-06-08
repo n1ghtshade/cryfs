@@ -92,7 +92,7 @@ namespace cpputils {
           Data result(plaintextSize(ciphertextSize));
           _xor(static_cast<CryptoPP::byte *>(result.data()), ciphertext + sizeof(uint64_t), plaintextSize(ciphertextSize), encKey.value ^ iv);
 
-          return boost::optional<Data>(std::move(result));
+          return result;
         }
 
         static constexpr const char *NAME = "FakeAuthenticatedCipher";

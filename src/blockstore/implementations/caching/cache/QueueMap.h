@@ -48,7 +48,7 @@ public:
     _removeFromQueue(found->second);
     auto value = found->second.release();
     _entries.erase(found);
-    return std::move(value);
+    return value;
   }
 
   boost::optional<Value> pop() {
