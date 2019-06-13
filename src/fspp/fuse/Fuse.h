@@ -49,7 +49,7 @@ public:
   int release(const boost::filesystem::path &path, fuse_file_info *fileinfo);
   int read(const boost::filesystem::path &path, char *buf, size_t size, int64_t offset, fuse_file_info *fileinfo);
   int write(const boost::filesystem::path &path, const char *buf, size_t size, int64_t offset, fuse_file_info *fileinfo);
-  int statfs(const boost::filesystem::path &path, struct ::statvfs *fsstat);
+  int statfs(const boost::filesystem::path &path, struct fuse_statvfs *fsstat);
   int flush(const boost::filesystem::path &path, fuse_file_info *fileinfo);
   int fsync(const boost::filesystem::path &path, int flags, fuse_file_info *fileinfo);
   int opendir(const boost::filesystem::path &path, fuse_file_info *fileinfo);

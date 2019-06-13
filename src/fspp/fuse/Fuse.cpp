@@ -15,7 +15,6 @@
 
 #if defined(_MSC_VER)
 #include <codecvt>
-#include <dokan/dokan.h>
 #endif
 
 using std::vector;
@@ -113,8 +112,8 @@ int fusepp_ftruncate(const char *path, int64_t size, fuse_file_info *fileinfo) {
   return FUSE_OBJ->ftruncate(bf::path(path), size, fileinfo);
 }
 
-int fusepp_utimens(const char *path, const timespec times[2]) {
-  return FUSE_OBJ->utimens(bf::path(path), times);
+int fusepp_utimens(const char *path, const fuse_timespec times[2]) {  // NOLINT(cppcoreguidelines-avoid-c-arrays)
+	return FUSE_OBJ->utimens(bf::path(path), { timespec{times[0].tv_sec, static_cast<long>(times[0].tv_nsec)}, timespec{times[1].tv_sec, static_cast<long>(times[1].tv_nsec)} });
 }
 
 int fusepp_open(const char *path, fuse_file_info *fileinfo) {
@@ -133,7 +132,7 @@ int fusepp_write(const char *path, const char *buf, size_t size, int64_t offset,
   return FUSE_OBJ->write(bf::path(path), buf, size, offset, fileinfo);
 }
 
-int fusepp_statfs(const char *path, struct statvfs *fsstat) {
+int fusepp_statfs(const char *path, struct fuse_statvfs *fsstat) {
   return FUSE_OBJ->statfs(bf::path(path), fsstat);
 }
 
@@ -346,8 +345,9 @@ void Fuse::unmount(const bf::path& mountdir, bool force) {
 #elif defined(_MSC_VER)
   UNUSED(force);
   std::wstring mountdir_ = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(mountdir.string());
-  BOOL success = DokanRemoveMountPoint(mountdir_.c_str());
-  int returncode = success ? 0 : -1;
+  abort(); int returncode = -1;// TODO Implement unmountin
+  //BOOL success = DokanRemoveMountPoint(mountdir_.c_str());
+  //int returncode = success ? 0 : -1;
 #else
   std::string command = force ? "fusermount -u" : "fusermount -z -u";  // "-z" takes care that if the filesystem can't be unmounted right now because something is opened, it will be unmounted as soon as it can be.
   int returncode = cpputils::Subprocess::call(
@@ -896,7 +896,7 @@ int Fuse::write(const bf::path &path, const char *buf, size_t size, int64_t offs
   }
 }
 
-int Fuse::statfs(const bf::path &path, struct ::statvfs *fsstat) {
+int Fuse::statfs(const bf::path &path, struct fuse_statvfs *fsstat) {
   ThreadNameForDebugging _threadName("statfs");
 #ifdef FSPP_LOG
   LOG(DEBUG, "statfs({}, _)", path);
@@ -1018,6 +1018,7 @@ int Fuse::readdir(const bf::path &path, void *buf, fuse_fill_dir_t filler, int64
       } else if (entry.type == Dir::EntryType::FILE) {
         stbuf.st_mode = S_IFREG;
       } else if (entry.type == Dir::EntryType::SYMLINK) {
+#define	S_IFLNK	 0120000
         stbuf.st_mode = S_IFLNK;
       } else {
         ASSERT(false, "Unknown entry type");
