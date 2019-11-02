@@ -5,6 +5,9 @@ class CryFSConan(ConanFile):
 	requires = [
 		"range-v3/0.9.1@ericniebler/stable",
 	]
+	build_requires = [
+		"gtest/1.10.0",
+	]
 	generators = "cmake"
 	default_options = {
 		# Need to disable boost-math because that doesn't compile for some reason on CI
