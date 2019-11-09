@@ -188,7 +188,7 @@ jobs:
       CXX: g++-6
       BUILD_TOOLSET: gcc
       APT_COMPILER_PACKAGE: "g++-6"
-      CXXFLAGS: ""
+      CXXFLAGS: "-D_GLIBCXX_DEBUG=1 -D_GLIBCXX_SANITIZE_VECTOR=1"
       BUILD_TYPE: "Debug"
       GTEST_ARGS: ""
       CMAKE_FLAGS: ""
@@ -212,7 +212,7 @@ jobs:
       CXX: g++-7
       BUILD_TOOLSET: gcc
       APT_COMPILER_PACKAGE: "g++-7"
-      CXXFLAGS: ""
+      CXXFLAGS: "-D_GLIBCXX_DEBUG=1 -D_GLIBCXX_SANITIZE_VECTOR=1"
       BUILD_TYPE: "Debug"
       GTEST_ARGS: ""
       CMAKE_FLAGS: ""
@@ -236,7 +236,7 @@ jobs:
       CXX: g++-8
       BUILD_TOOLSET: gcc
       APT_COMPILER_PACKAGE: "g++-8"
-      CXXFLAGS: ""
+      CXXFLAGS: "-D_GLIBCXX_DEBUG=1 -D_GLIBCXX_SANITIZE_VECTOR=1"
       BUILD_TYPE: "Debug"
       GTEST_ARGS: ""
       CMAKE_FLAGS: ""
@@ -260,7 +260,7 @@ jobs:
       CXX: g++-9
       BUILD_TOOLSET: gcc
       APT_COMPILER_PACKAGE: "g++-9"
-      CXXFLAGS: ""
+      CXXFLAGS: "-D_GLIBCXX_DEBUG=1 -D_GLIBCXX_SANITIZE_VECTOR=1"
       BUILD_TYPE: "Debug"
       GTEST_ARGS: ""
       CMAKE_FLAGS: ""
