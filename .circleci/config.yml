@@ -456,6 +456,18 @@ jobs:
       GTEST_ARGS: ""
       CMAKE_FLAGS: ""
       RUN_TESTS: true
+  local_dependencies:
+    <<: *job_definition
+    environment:
+      CC: clang-9
+      CXX: clang++-9
+      BUILD_TOOLSET: clang
+      APT_COMPILER_PACKAGE: clang-9
+      CXXFLAGS: ""
+      BUILD_TYPE: "RelWithDebInfo"
+      GTEST_ARGS: ""
+      CMAKE_FLAGS: "-DDEPENDENCY_CONFIG=../cmake-utils/DependenciesFromLocalSystem.cmake"
+      RUN_TESTS: true
   address_sanitizer:
     <<: *job_definition
     environment:
@@ -573,6 +585,8 @@ workflows:
     - gcc_werror:
         <<: *enable_for_tags
     - no_compatibility:
+        <<: *enable_for_tags
+    - local_dependencies:
         <<: *enable_for_tags
     - address_sanitizer:
         <<: *enable_for_tags

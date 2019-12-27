@@ -25,6 +25,9 @@ option(USE_WERROR "build with -Werror flag")
 option(USE_CLANG_TIDY "build with clang-tidy checks enabled" OFF)
 option(USE_IWYU "build with iwyu checks enabled" OFF)
 option(CLANG_TIDY_WARNINGS_AS_ERRORS "treat clang-tidy warnings as errors" OFF)
+set(DEPENDENCY_CONFIG "cmake-utils/DependenciesFromConan.cmake" CACHE FILEPATH "cmake configuration file defining how to get dependencies")
+
+include(${DEPENDENCY_CONFIG})
 
 if(USE_IWYU)
     # note: for iwyu, we need cmake 3.3
