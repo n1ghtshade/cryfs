@@ -1,4 +1,6 @@
 # Taken from https://github.com/conan-io/cmake-conan/blob/v0.14/conan.cmake
+# Changes:
+# - https://github.com/conan-io/cmake-conan/pull/192
 
 # The MIT License (MIT)
 
@@ -318,7 +320,7 @@ endfunction()
 
 
 macro(parse_arguments)
-    set(options BASIC_SETUP CMAKE_TARGETS UPDATE KEEP_RPATHS NO_LOAD NO_OUTPUT_DIRS OUTPUT_QUIET NO_IMPORTS)
+    set(options BASIC_SETUP CMAKE_TARGETS UPDATE KEEP_RPATHS NO_LOAD NO_OUTPUT_DIRS OUTPUT_QUIET NO_IMPORTS SKIP_STD)
     set(oneValueArgs CONANFILE  ARCH BUILD_TYPE INSTALL_FOLDER CONAN_COMMAND)
     set(multiValueArgs DEBUG_PROFILE RELEASE_PROFILE RELWITHDEBINFO_PROFILE MINSIZEREL_PROFILE
             PROFILE REQUIRES OPTIONS IMPORTS SETTINGS BUILD ENV GENERATORS PROFILE_AUTO
@@ -493,7 +495,7 @@ macro(conan_cmake_run)
     endif()
 
     if(ARGUMENTS_BASIC_SETUP)
-        foreach(_option CMAKE_TARGETS KEEP_RPATHS NO_OUTPUT_DIRS)
+        foreach(_option CMAKE_TARGETS KEEP_RPATHS NO_OUTPUT_DIRS SKIP_STD)
             if(ARGUMENTS_${_option})
                 if(${_option} STREQUAL "CMAKE_TARGETS")
                     list(APPEND _setup_options "TARGETS")
