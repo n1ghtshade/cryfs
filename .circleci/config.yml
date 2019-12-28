@@ -106,6 +106,14 @@ references:
         cmake --version
         /usr/local/bin/$CC --version
         /usr/local/bin/$CXX --version
+  install_dependencies_locally: &install_dependencies_locally
+    # This is not required for a build with conan, this is only to be able to test building CryFS
+    # against locally installed dependency libraries.
+    run:
+      name: Install dependencies locally
+      no_output_timeout: 30m
+      command: |
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install -y librange-v3-dev libspdlog-dev libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-chrono-dev libboost-program-options-dev
   build_pre: &build_pre
     restore_cache:
       keys:
@@ -457,7 +465,18 @@ jobs:
       CMAKE_FLAGS: ""
       RUN_TESTS: true
   local_dependencies:
-    <<: *job_definition
+    <<: *container_config
+    steps:
+      - <<: *cache_init
+      - <<: *container_setup_pre
+      - <<: *container_setup
+      - <<: *container_setup_post
+      - checkout
+      - <<: *install_dependencies_locally
+      - <<: *build_pre
+      - <<: *build
+      - <<: *build_post
+      - <<: *test
     environment:
       CC: clang-9
       CXX: clang++-9
