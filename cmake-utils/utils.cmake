@@ -8,7 +8,7 @@ include(CheckCXXCompilerFlag)
 function(target_activate_cpp14 TARGET)
     if(MSVC)
         # Required by range-v3, see its README.md
-        set_property(TARGET ${TARGET} PROPERTY CXX_STANDARD 17)
+        set_property(TARGET ${TARGET} PROPERTY CXX_STANDARD 20)
     else()
         set_property(TARGET ${TARGET} PROPERTY CXX_STANDARD 14)
     endif()
