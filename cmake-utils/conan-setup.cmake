@@ -4,11 +4,9 @@ function(setup_conan)
     set(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
     conan_cmake_run(
-            CONANFILE conanfile.py
-            BASIC_SETUP
-            CMAKE_TARGETS
-            SKIP_STD
-            BUILD missing)
+        CONANFILE conanfile.py
+        BUILD missing)
+    conan_basic_setup(TARGETS SKIP_STD)
 
     if(CONAN_SETTINGS_COMPILER_LIBCXX STREQUAL "libstdc++")
         # TODO Test this warning works correctly and that the proposed solution in the warning message works.
