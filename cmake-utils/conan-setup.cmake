@@ -1,8 +1,6 @@
 function(setup_conan)
     include(cmake-utils/conan.cmake)
 
-    set(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-
     conan_cmake_run(
         CONANFILE conanfile.py
         BUILD missing)
