@@ -1,4 +1,4 @@
-function(setup_conan)
+macro(setup_conan)
     include(cmake-utils/conan.cmake)
 
     conan_cmake_run(
@@ -10,4 +10,4 @@ function(setup_conan)
         # TODO Test this warning works correctly and that the proposed solution in the warning message works.
         message(FATAL_ERROR "Conan is set up to build against libstdc++ (i.e. the legacy GCC ABI). We only support libstdc++11 (i.e. the new GCC ABI).\nPlease add the '-s compiler.libcxx=libstdc++11' argument when running 'conan install'.")
     endif()
-endfunction()
+endmacro()
