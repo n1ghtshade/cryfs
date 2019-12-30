@@ -131,7 +131,7 @@ references:
         fi
         tar -xf cmake.tar.gz
         rm cmake.tar.gz
-        cp -R cmake-3.6.3-Linux-x86_64/* /usr
+        sudo cp -R cmake-3.6.3-Linux-x86_64/* /usr
 
         echo Download range-v3
         cd ~
