@@ -8,7 +8,7 @@ references:
     run:
       name: Initialize Cache
       command: |
-        echo "${APT_COMPILER_PACKAGE}_${BUILD_TOOLSET}_${CXX}_${CC}_${BUILD_TYPE}_${CXXFLAGS}" > /tmp/_build_env_vars
+        echo "${APT_COMPILER_PACKAGE}_${BUILD_TOOLSET}_${CXX}_${CC}_${BUILD_TYPE}_${CMAKE_FLAGS}_${CXXFLAGS}" > /tmp/_build_env_vars
         echo Build env vars used for cache keys:
         cat /tmp/_build_env_vars
   container_setup_pre: &container_setup_pre
@@ -113,7 +113,85 @@ references:
       name: Install dependencies locally
       no_output_timeout: 30m
       command: |
-        DEBIAN_FRONTEND=noninteractive sudo apt-get install -y librange-v3-dev libspdlog-dev libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-chrono-dev libboost-program-options-dev
+        # TODO Cache these dependencies for faster runtime
+
+        export NUMCORES=`nproc` && if [ ! -n "$NUMCORES" ]; then export NUMCORES=`sysctl -n hw.ncpu`; fi
+        echo Using $NUMCORES cores
+
+        echo Updating CMake - needed for range-v3
+        cd ~
+        SHASUM="7c1691cc589c3b72891c52c7cf4b2c0ceb56884ae7e8d7e0f43b5e3ca1080e79bacabfc2fa346dd2300e051f728f16e3c8fcda6eb7b36456a23b9ca602d88814"
+        wget ${PARAMS} https://cmake.org/files/v3.6/cmake-3.6.3-Linux-x86_64.tar.gz -O cmake.tar.gz
+        if [ $(sha512sum cmake.tar.gz | awk '{print $1;}') == "${SHASUM}" ]; then
+          echo Correct sha512sum
+        else
+          echo Wrong sha512sum
+          sha512sum cmake.tar.gz
+          exit 1
+        fi
+        tar -xf cmake.tar.gz
+        rm cmake.tar.gz
+        cp -R cmake-3.6.3-Linux-x86_64/* /usr
+
+        echo Download range-v3
+        cd ~
+        wget https://github.com/ericniebler/range-v3/archive/0.10.0.tar.gz -O range-v3-0.10.0.tar.gz
+        if [ $(sha512sum range-v3-0.10.0.tar.gz | awk '{print $1;}') == "4db089dcbf638eb30fa20dcf6785dd460c5a074a8912984a484592753cfee9f5b9a0e2c56b5bc5921d1b6120877aa2c83ac0a6fe428088ef2854033a635e9723" ]; then
+          echo Correct sha512sum
+        else
+          echo Wrong sha512sum
+          sha512sum range-v3-0.10.0.tar.gz
+          exit 1
+        fi
+        tar -xvf range-v3-0.10.0.tar.gz
+        cd range-v3-0.10.0/
+
+        echo Install range-v3
+        mkdir build
+        cd build
+        cmake .. -DRANGES_HAS_WERROR=off -DRANGE_V3_EXAMPLES=off -DRANGE_V3_TESTS=off
+        make -j$NUMCORES
+        sudo make install
+
+        echo Download spdlog
+        cd ~
+        wget https://github.com/gabime/spdlog/archive/v1.4.2.tar.gz -O spdlog.tar.gz
+        if [ $(sha512sum spdlog.tar.gz | awk '{print $1;}') == "886b489138a1bdf363b5eab65a7d973f570a01c399ff5b910fcfee172ad4ff4d42a45dc2ae24e77b07130df527fb13a86b3e55ac992e72c418aebb232e27eabf" ]; then
+          echo Correct sha512sum
+        else
+          echo Wrong sha512sum
+          sha512sum spdlog.tar.gz
+          exit 1
+        fi
+        tar -xvf spdlog.tar.gz
+        rm spdlog.tar.gz
+        cd spdlog-1.4.2
+
+        echo Install spdlog
+        mkdir build
+        cd build
+        cmake ..
+        sudo make install
+
+        echo Download boost
+        cd ~
+        wget -O boost.tar.bz2 https://sourceforge.net/projects/boost/files/boost/1.72.0/boost_1_72_0.tar.bz2/download
+        if [ $(sha512sum boost.tar.bz2 | awk '{print $1;}') == "63bbd1743e7c904b2e69fdc2eafd1c2a8a30fd70d960dcd366059d0100f000cb605d56cbd9397bb18421631f1c9552a772c434d0f0caddbe56302273f51fd1f6" ]; then
+          echo Correct sha512sum
+        else
+          echo Wrong sha512sum
+          sha512sum boost.tar.bz2
+          exit 1
+        fi
+        echo Extracting boost
+        tar -xf boost.tar.bz2
+        rm boost.tar.bz2
+        cd boost_1_72_0
+
+        echo Install boost
+        ./bootstrap.sh --with-libraries=filesystem,system,thread,chrono,program_options
+        sudo ./b2 link=shared cxxflags=-fPIC -d0 -j$NUMCORES install
+
   build_pre: &build_pre
     restore_cache:
       keys:
