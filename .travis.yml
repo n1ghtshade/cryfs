@@ -1,6 +1,6 @@
 language: cpp
 sudo: required
-os: osx
+os: windows
 compiler:
 # - gcc
 - clang
